@@ -49,22 +49,16 @@ export function CertificationApp() {
   };
 
   const handleBack = () => {
-    console.log('Back button clicked, current step:', currentStep);
     switch (currentStep) {
       case 'activity':
-        console.log('Going back from activity to info');
         setCurrentStep('info');
         break;
       case 'record':
-        console.log('Going back from record to activity');
         setCurrentStep('activity');
         break;
       case 'complete':
-        console.log('Going back from complete to record');
         setCurrentStep('record');
         break;
-      default:
-        console.log('No back action for current step:', currentStep);
     }
   };
 
@@ -332,10 +326,7 @@ export function CertificationApp() {
         <div className="flex justify-between mt-8">
           <Button
             variant="outline"
-            onClick={() => {
-              console.log('Back button clicked!');
-              handleBack();
-            }}
+            onClick={handleBack}
             disabled={currentStep === 'info'}
             className="w-24"
           >
