@@ -5,49 +5,116 @@ import { DemoPage } from '@/components/DemoPage';
 import { Card } from '@/components/ui/card';
 import { Play, Trophy, Video, Award, ArrowRight, Zap, Shield, Download } from 'lucide-react';
 
-console.log('Index component loading...');
-
 type ViewMode = 'landing' | 'app' | 'demo';
 
 const Index = () => {
-  console.log('Index component rendering...');
   const [viewMode, setViewMode] = useState<ViewMode>('landing');
 
-  console.log('Current viewMode:', viewMode);
+  if (viewMode === 'app') {
+    return <CertificationApp />;
+  }
 
-  try {
-    if (viewMode === 'app') {
-      console.log('Rendering CertificationApp...');
-      return <CertificationApp />;
-    }
+  if (viewMode === 'demo') {
+    return <DemoPage onBack={() => setViewMode('landing')} />;
+  }
 
-    if (viewMode === 'demo') {
-      console.log('Rendering DemoPage...');
-      return <DemoPage onBack={() => setViewMode('landing')} />;
-    }
-
-    console.log('Rendering landing page...');
-    
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="p-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">Athletic Certification</h1>
-          <p className="text-muted-foreground mb-8">Test page is working!</p>
-          <div className="flex gap-4 justify-center">
-            <Button onClick={() => setViewMode('app')}>
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <Trophy className="h-12 w-12 text-primary" />
+            <h1 className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              Athletic Certification
+            </h1>
+          </div>
+          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            Record your athletic performance, get professional feedback, and earn verified certificates 
+            to showcase your skills and achievements.
+          </p>
+          
+          <div className="flex gap-6 justify-center">
+            <Button 
+              onClick={() => setViewMode('app')} 
+              size="lg"
+              className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
+            >
+              <Video className="mr-2 h-5 w-5" />
               Start Recording
             </Button>
-            <Button variant="outline" onClick={() => setViewMode('demo')}>
+            <Button 
+              variant="outline" 
+              onClick={() => setViewMode('demo')} 
+              size="lg"
+            >
+              <Play className="mr-2 h-5 w-5" />
               View Demo
             </Button>
           </div>
         </div>
+
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <Card className="p-6 border-primary/20 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300">
+            <div className="text-center space-y-4">
+              <div className="bg-gradient-primary p-3 rounded-full w-fit mx-auto">
+                <Video className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold">Easy Recording</h3>
+              <p className="text-muted-foreground">
+                Simple one-click video recording with up to 30 seconds to showcase your skills
+              </p>
+            </div>
+          </Card>
+
+          <Card className="p-6 border-primary/20 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300">
+            <div className="text-center space-y-4">
+              <div className="bg-gradient-success p-3 rounded-full w-fit mx-auto">
+                <Zap className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold">Instant Analysis</h3>
+              <p className="text-muted-foreground">
+                Get immediate performance scoring and detailed feedback on your athletic performance
+              </p>
+            </div>
+          </Card>
+
+          <Card className="p-6 border-primary/20 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300">
+            <div className="text-center space-y-4">
+              <div className="bg-gradient-secondary p-3 rounded-full w-fit mx-auto">
+                <Award className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold">Professional Certificates</h3>
+              <p className="text-muted-foreground">
+                Download beautifully designed PDF certificates to verify and showcase your achievements
+              </p>
+            </div>
+          </Card>
+        </div>
+
+        {/* CTA Section */}
+        <Card className="p-8 border-primary/20 bg-card/50 backdrop-blur-sm text-center">
+          <div className="space-y-4">
+            <Shield className="h-12 w-12 text-primary mx-auto" />
+            <h2 className="text-2xl font-semibold">Ready to Get Certified?</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Join thousands of athletes who have already earned their certifications. 
+              Start your journey today and get recognized for your athletic excellence.
+            </p>
+            <Button 
+              onClick={() => setViewMode('app')} 
+              size="lg"
+              className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
+            >
+              Get Started Now
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+        </Card>
       </div>
-    );
-  } catch (error) {
-    console.error('Error in Index component:', error);
-    return <div>Error loading page: {String(error)}</div>;
-  }
+    </div>
+  );
 };
 
 export default Index;
