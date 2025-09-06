@@ -83,6 +83,18 @@ export function CertificationApp() {
         videoBlob
       };
       setCertificate(newCertificate);
+      
+      // Save to localStorage for profile dashboard
+      const existingRecords = JSON.parse(localStorage.getItem('athleteRecords') || '[]');
+      const newRecord = {
+        id: newCertificate.id,
+        activity: newCertificate.customActivity || newCertificate.activity,
+        score: newCertificate.score,
+        date: newCertificate.date,
+        certificate: true
+      };
+      localStorage.setItem('athleteRecords', JSON.stringify([...existingRecords, newRecord]));
+      
       setCurrentStep('complete');
       toast({
         title: "Certificate generated!",
@@ -274,7 +286,14 @@ export function CertificationApp() {
 
         {/* Navigation */}
         <div className="flex justify-between mt-8">
-          
+          <Button 
+            onClick={handleBack} 
+            disabled={currentStep === 'info'}
+            variant="outline"
+            className="w-24"
+          >
+            Back
+          </Button>
           
           <Button onClick={handleNext} disabled={currentStep === 'info' && !canProceedFromInfo || currentStep === 'activity' && !canProceedFromActivity || currentStep === 'record' && !canGenerateCertificate || currentStep === 'complete' || isGenerating} className="w-24 bg-gradient-primary hover:shadow-glow transition-all duration-300">
             {isGenerating ? 'Generating...' : currentStep === 'record' ? 'Generate' : 'Next'}
