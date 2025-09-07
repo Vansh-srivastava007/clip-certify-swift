@@ -5,8 +5,9 @@ import { DemoPage } from '@/components/DemoPage';
 import { ProfileDashboard } from '@/components/ProfileDashboard';
 import { AIGuide } from '@/components/AIGuide';
 import { SportsUpdate } from '@/components/SportsUpdate';
+import { Navbar } from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
-import { Play, Trophy, Video, Award, ArrowRight, Zap, Shield, Download, User, Brain, Globe, Home } from 'lucide-react';
+import { Play, Trophy, Video, Award, ArrowRight, Zap, Shield, Home } from 'lucide-react';
 
 type ViewMode = 'landing' | 'app' | 'demo' | 'profile' | 'ai-guide' | 'sports-update';
 
@@ -83,6 +84,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navbar 
+        onProfileClick={() => setViewMode('profile')}
+        onAIGuideClick={() => setViewMode('ai-guide')}
+        onSportsUpdateClick={() => setViewMode('sports-update')}
+      />
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-16">
@@ -156,65 +162,6 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Main Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <Card 
-            className="p-6 border-primary/20 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300 cursor-pointer"
-            onClick={() => setViewMode('profile')}
-          >
-            <div className="text-center space-y-4">
-              <div className="bg-gradient-primary p-3 rounded-full w-fit mx-auto">
-                <User className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold">Profile Dashboard</h3>
-              <p className="text-muted-foreground">
-                Track your athletic journey, view past certifications, and monitor your progress over time
-              </p>
-              <Button className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300">
-                View Dashboard
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </Card>
-
-          <Card 
-            className="p-6 border-primary/20 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300 cursor-pointer"
-            onClick={() => setViewMode('ai-guide')}
-          >
-            <div className="text-center space-y-4">
-              <div className="bg-gradient-success p-3 rounded-full w-fit mx-auto">
-                <Brain className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold">AI Athletic Guide</h3>
-              <p className="text-muted-foreground">
-                Get personalized training plans, nutrition advice, and performance optimization recommendations
-              </p>
-              <Button className="w-full bg-gradient-success hover:shadow-glow transition-all duration-300">
-                Get AI Guidance
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </Card>
-
-          <Card 
-            className="p-6 border-primary/20 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300 cursor-pointer"
-            onClick={() => setViewMode('sports-update')}
-          >
-            <div className="text-center space-y-4">
-              <div className="bg-gradient-secondary p-3 rounded-full w-fit mx-auto">
-                <Globe className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold">Sports Updates</h3>
-              <p className="text-muted-foreground">
-                Discover competitions, join tournaments, and connect with the athletic community
-              </p>
-              <Button className="w-full bg-gradient-secondary hover:shadow-glow transition-all duration-300">
-                View Updates
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </Card>
-        </div>
 
         {/* CTA Section */}
         <Card className="p-8 border-primary/20 bg-card/50 backdrop-blur-sm text-center">
