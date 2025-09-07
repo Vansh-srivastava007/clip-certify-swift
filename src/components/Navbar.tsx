@@ -1,13 +1,14 @@
 import { Button } from '@/components/ui/button';
-import { User, Brain, Globe } from 'lucide-react';
+import { User, Brain, Globe, Trophy } from 'lucide-react';
 
 interface NavbarProps {
   onProfileClick: () => void;
   onAIGuideClick: () => void;
   onSportsUpdateClick: () => void;
+  onChallengesClick: () => void;
 }
 
-export const Navbar = ({ onProfileClick, onAIGuideClick, onSportsUpdateClick }: NavbarProps) => {
+export const Navbar = ({ onProfileClick, onAIGuideClick, onSportsUpdateClick, onChallengesClick }: NavbarProps) => {
   return (
     <nav className="bg-background/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-4">
@@ -44,6 +45,15 @@ export const Navbar = ({ onProfileClick, onAIGuideClick, onSportsUpdateClick }: 
             >
               <Globe className="h-4 w-4" />
               Sports Updates
+            </Button>
+            
+            <Button
+              variant="ghost"
+              onClick={onChallengesClick}
+              className="flex items-center gap-2"
+            >
+              <Trophy className="h-4 w-4" />
+              Challenges
             </Button>
           </div>
         </div>

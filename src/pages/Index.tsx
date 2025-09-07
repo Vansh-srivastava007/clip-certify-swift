@@ -5,11 +5,12 @@ import { DemoPage } from '@/components/DemoPage';
 import { ProfileDashboard } from '@/components/ProfileDashboard';
 import { AIGuide } from '@/components/AIGuide';
 import { SportsUpdate } from '@/components/SportsUpdate';
+import { Challenges } from '@/components/Challenges';
 import { Navbar } from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import { Play, Trophy, Video, Award, ArrowRight, Zap, Shield, Home } from 'lucide-react';
 
-type ViewMode = 'landing' | 'app' | 'demo' | 'profile' | 'ai-guide' | 'sports-update';
+type ViewMode = 'landing' | 'app' | 'demo' | 'profile' | 'ai-guide' | 'sports-update' | 'challenges';
 
 const Index = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('landing');
@@ -82,12 +83,33 @@ const Index = () => {
     );
   }
 
+  if (viewMode === 'challenges') {
+    return (
+      <div className="min-h-screen bg-background p-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <Button 
+              onClick={() => setViewMode('landing')} 
+              variant="outline"
+              size="sm"
+            >
+              <Home className="mr-2 h-4 w-4" />
+              Back to Home
+            </Button>
+          </div>
+          <Challenges />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar 
         onProfileClick={() => setViewMode('profile')}
         onAIGuideClick={() => setViewMode('ai-guide')}
         onSportsUpdateClick={() => setViewMode('sports-update')}
+        onChallengesClick={() => setViewMode('challenges')}
       />
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Hero Section */}
