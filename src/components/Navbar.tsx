@@ -14,7 +14,7 @@ export const Navbar = ({ onProfileClick, onAIGuideClick, onSportsUpdateClick }: 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Athletic Certification
+              AI Coach
             </h1>
           </div>
           

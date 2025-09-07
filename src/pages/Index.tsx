@@ -95,7 +95,7 @@ const Index = () => {
           <div className="flex items-center justify-center gap-3 mb-6">
             <Trophy className="h-12 w-12 text-primary" />
             <h1 className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Athletic Certification
+              AI Coach
             </h1>
           </div>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
