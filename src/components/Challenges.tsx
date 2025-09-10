@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { VideoRecorder } from '@/components/VideoRecorder';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { generateCertificatePDF } from '@/utils/pdfGenerator';
@@ -16,7 +18,10 @@ import {
   Target,
   Timer,
   Award,
-  Flame
+  Flame,
+  Download,
+  Medal,
+  Shield
 } from 'lucide-react';
 
 interface Challenge {
@@ -133,6 +138,9 @@ export const Challenges = () => {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [showVideoRecorder, setShowVideoRecorder] = useState(false);
   const [challengeProgress, setChallengeProgress] = useState<ChallengeProgress[]>([]);
+  const [showCertificateForm, setShowCertificateForm] = useState(false);
+  const [completedChallenge, setCompletedChallenge] = useState<Challenge | null>(null);
+  const [userName, setUserName] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -189,21 +197,14 @@ export const Challenges = () => {
     if (newProgress && newProgress.completedTasks.length === selectedChallenge.tasks.length) {
       newProgress.completed = true;
       
-      // Generate certificate
+      // Show certificate form instead of auto-generating
       if (!newProgress.certificateGenerated) {
-        generateCertificatePDF({
-          id: `challenge-${selectedChallenge.id}`,
-          userName: 'Athlete', // In a real app, this would come from user data
-          activity: 'Challenge Completion' as any,
-          customActivity: selectedChallenge.name,
-          score: 100,
-          date: new Date().toLocaleDateString(),
-        });
-        newProgress.certificateGenerated = true;
+        setCompletedChallenge(selectedChallenge);
+        setShowCertificateForm(true);
         
         toast({
           title: "🏆 Challenge Completed!",
-          description: "Congratulations! Your completion certificate has been generated.",
+          description: "Congratulations! You can now claim your official certificate.",
         });
       }
     }
@@ -232,6 +233,106 @@ export const Challenges = () => {
     const progress = getChallengeProgress(challengeId);
     return progress?.completedTasks.includes(taskId) || false;
   };
+
+  const handleCertificateDownload = async () => {
+    if (!completedChallenge || !userName.trim()) return;
+
+    await generateCertificatePDF({
+      id: `challenge-${completedChallenge.id}`,
+      userName: userName.trim(),
+      activity: 'Challenge Completion' as any,
+      customActivity: completedChallenge.name,
+      score: 100,
+      date: new Date().toLocaleDateString(),
+    });
+
+    // Mark certificate as generated
+    const updatedProgress = challengeProgress.map(p => 
+      p.challengeId === completedChallenge.id 
+        ? { ...p, certificateGenerated: true }
+        : p
+    );
+
+    saveProgress(updatedProgress);
+    setShowCertificateForm(false);
+    setCompletedChallenge(null);
+    setUserName('');
+
+    toast({
+      title: "Certificate Downloaded!",
+      description: "Your official Government-recognized certificate has been downloaded.",
+    });
+  };
+
+  // Certificate Form Modal
+  if (showCertificateForm && completedChallenge) {
+    return (
+      <div className="max-w-2xl mx-auto space-y-6">
+        <Card className="p-8 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+          <div className="text-center space-y-6">
+            <div className="flex items-center justify-center gap-3">
+              <Medal className="h-16 w-16 text-primary" />
+              <Trophy className="h-20 w-20 text-primary" />
+              <Medal className="h-16 w-16 text-primary" />
+            </div>
+            
+            <div>
+              <h2 className="text-3xl font-bold text-primary mb-2">🏆 Congratulations!</h2>
+              <p className="text-lg text-muted-foreground">
+                You have successfully completed the <strong>{completedChallenge.name}</strong>
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-lg p-6">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Shield className="h-6 w-6 text-primary" />
+                <h3 className="text-xl font-semibold">Government-Recognized Certificate</h3>
+                <Shield className="h-6 w-6 text-primary" />
+              </div>
+              
+              <p className="text-sm text-muted-foreground mb-4">
+                This certificate is officially recognized by the Government of India 
+                Ministry of Youth Affairs & Sports and serves as proof of your athletic achievement.
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="userName" className="text-base font-medium">
+                    Enter your full name as it should appear on the certificate:
+                  </Label>
+                  <Input
+                    id="userName"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    placeholder="Your Full Name"
+                    className="mt-2 text-center text-lg"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <Button 
+                    onClick={() => setShowCertificateForm(false)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleCertificateDownload}
+                    disabled={!userName.trim()}
+                    className="flex-1"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Certificate
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   if (showVideoRecorder && activeTask) {
     return (
@@ -367,6 +468,63 @@ export const Challenges = () => {
           Complete daily tasks, submit videos, and earn certificates upon completion.
         </p>
       </div>
+
+      {/* Certificate Award Section */}
+      <Card className="p-8 bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5 border-primary/20">
+        <div className="text-center space-y-6">
+          <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center gap-2">
+              <Shield className="h-8 w-8 text-primary" />
+              <span className="text-2xl">🇮🇳</span>
+            </div>
+            <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              Government-Recognized Certificates
+            </h2>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🏛️</span>
+              <Award className="h-8 w-8 text-primary" />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div className="text-center space-y-3">
+              <div className="w-16 h-16 mx-auto bg-gradient-primary rounded-full flex items-center justify-center">
+                <Medal className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold">Official Recognition</h3>
+              <p className="text-sm text-muted-foreground">
+                Certificates issued by Government of India Ministry of Youth Affairs & Sports
+              </p>
+            </div>
+            
+            <div className="text-center space-y-3">
+              <div className="w-16 h-16 mx-auto bg-gradient-primary rounded-full flex items-center justify-center">
+                <Shield className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold">Authentic & Verified</h3>
+              <p className="text-sm text-muted-foreground">
+                Each certificate includes official seals, signatures, and unique verification ID
+              </p>
+            </div>
+            
+            <div className="text-center space-y-3">
+              <div className="w-16 h-16 mx-auto bg-gradient-primary rounded-full flex items-center justify-center">
+                <Trophy className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold">Career Enhancement</h3>
+              <p className="text-sm text-muted-foreground">
+                Valuable addition to your portfolio, resume, and professional achievements
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-lg p-4 mt-6">
+            <p className="text-sm font-medium text-primary">
+              🏆 Complete any challenge to earn your official Government-recognized certificate 🏆
+            </p>
+          </div>
+        </div>
+      </Card>
 
       <Tabs defaultValue="all" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
