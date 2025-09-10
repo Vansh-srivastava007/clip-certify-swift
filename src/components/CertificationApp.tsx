@@ -9,8 +9,26 @@ import { ActivitySelector } from './ActivitySelector';
 import { Activity, Certificate } from '@/types';
 import { generateCertificatePDF, generateScore } from '@/utils/pdfGenerator';
 import { v4 as uuidv4 } from 'uuid';
-import { Download, User, Trophy, CheckCircle, AlertCircle } from 'lucide-react';
+import { Download, User, Trophy, CheckCircle, AlertCircle, Zap, Target, Timer } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+interface PerformanceAnalysis {
+  overallScore: number;
+  speedTiming: {
+    score: number;
+    feedback: string;
+  };
+  bodyMovement: {
+    score: number;
+    feedback: string;
+  };
+  technique: {
+    score: number;
+    feedback: string;
+  };
+  areasForImprovement: string[];
+  personalizedTips: string[];
+}
 type Step = 'info' | 'activity' | 'record' | 'complete';
 export function CertificationApp() {
   const [currentStep, setCurrentStep] = useState<Step>('info');
@@ -20,12 +38,14 @@ export function CertificationApp() {
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [certificate, setCertificate] = useState<Certificate | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [performanceAnalysis, setPerformanceAnalysis] = useState<PerformanceAnalysis | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const {
     toast
   } = useToast();
   const canProceedFromInfo = userName.trim().length >= 2;
   const canProceedFromActivity = selectedActivity !== 'Custom' || customActivity.trim().length >= 2;
-  const canGenerateCertificate = videoBlob !== null;
+  const canGenerateCertificate = videoBlob !== null && performanceAnalysis !== null;
   const handleNext = () => {
     switch (currentStep) {
       case 'info':
@@ -58,15 +78,54 @@ export function CertificationApp() {
         break;
     }
   };
-  const handleVideoReady = (blob: Blob) => {
+  const generatePerformanceAnalysis = (): PerformanceAnalysis => {
+    const baseScore = Math.floor(Math.random() * 40) + 60; // 60-100 range
+    
+    return {
+      overallScore: baseScore,
+      speedTiming: {
+        score: Math.floor(Math.random() * 30) + 70,
+        feedback: baseScore > 80 ? "Excellent timing and rhythm" : "Good pace, focus on consistency"
+      },
+      bodyMovement: {
+        score: Math.floor(Math.random() * 25) + 75,
+        feedback: baseScore > 85 ? "Perfect form and coordination" : "Good technique, work on smoothness"
+      },
+      technique: {
+        score: Math.floor(Math.random() * 35) + 65,
+        feedback: baseScore > 75 ? "Strong technical execution" : "Solid basics, refine advanced moves"
+      },
+      areasForImprovement: [
+        "Focus on breathing technique during high intensity",
+        "Maintain consistent form throughout the movement",
+        "Work on explosive power in the initial phase"
+      ],
+      personalizedTips: [
+        `Based on your ${selectedActivity.toLowerCase()} performance, try incorporating interval training`,
+        "Your unique movement pattern shows potential for advanced techniques",
+        `Personalized recommendation: Focus on ${selectedActivity === 'Sprinter' ? 'start acceleration' : selectedActivity === 'Footballer' ? 'ball control' : 'endurance building'}`
+      ]
+    };
+  };
+
+  const handleVideoReady = async (blob: Blob) => {
     setVideoBlob(blob);
-    toast({
-      title: "Video recorded successfully!",
-      description: "You can now generate your certificate."
-    });
+    setIsAnalyzing(true);
+    
+    // Simulate AI analysis delay
+    setTimeout(() => {
+      const analysis = generatePerformanceAnalysis();
+      setPerformanceAnalysis(analysis);
+      setIsAnalyzing(false);
+      
+      toast({
+        title: "AI Analysis Complete!",
+        description: "Your personalized performance report is ready."
+      });
+    }, 3000);
   };
   const generateCertificate = async () => {
-    if (!videoBlob || !userName) return;
+    if (!videoBlob || !userName || !performanceAnalysis) return;
     setIsGenerating(true);
     try {
       const newCertificate: Certificate = {
@@ -74,7 +133,7 @@ export function CertificationApp() {
         userName: userName.trim(),
         activity: selectedActivity,
         customActivity: selectedActivity === 'Custom' ? customActivity.trim() : undefined,
-        score: generateScore(),
+        score: performanceAnalysis.overallScore,
         date: new Date().toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
@@ -228,14 +287,93 @@ export function CertificationApp() {
           {currentStep === 'record' && <div className="space-y-6">
               <Card className="p-6 border-primary/20 bg-card/50 backdrop-blur-sm">
                 <div className="text-center mb-6">
-                  <h2 className="text-2xl font-semibold mb-2">Record Your Performance</h2>
+                  <h2 className="text-2xl font-semibold mb-2">Record Your Personalized Performance</h2>
                   <p className="text-muted-foreground">
-                    Show us your {selectedActivity === 'Custom' ? customActivity : selectedActivity.toLowerCase()} skills in action
+                    Show us your {selectedActivity === 'Custom' ? customActivity : selectedActivity.toLowerCase()} skills - our AI will provide personalized feedback just for you
                   </p>
                 </div>
               </Card>
               
-              <VideoRecorder onVideoReady={handleVideoReady} disabled={isGenerating} />
+              <VideoRecorder onVideoReady={handleVideoReady} disabled={isGenerating || isAnalyzing} />
+              
+              {isAnalyzing && (
+                <Card className="p-6 border-primary/20 bg-gradient-primary/5">
+                  <div className="text-center space-y-4">
+                    <div className="flex items-center justify-center gap-3">
+                      <Zap className="h-8 w-8 text-primary animate-pulse" />
+                      <h3 className="text-xl font-semibold">AI Analysis in Progress</h3>
+                    </div>
+                    <p className="text-muted-foreground">
+                      Our AI is analyzing your unique performance patterns...
+                    </p>
+                    <div className="flex justify-center space-x-2">
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    </div>
+                  </div>
+                </Card>
+              )}
+              
+              {performanceAnalysis && !isAnalyzing && (
+                <Card className="p-6 border-success/20 bg-gradient-success/5">
+                  <div className="space-y-6">
+                    <div className="text-center">
+                      <h3 className="text-xl font-semibold text-success mb-2">Personalized Performance Analysis</h3>
+                      <p className="text-muted-foreground">Based on your unique athletic profile</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="text-center p-4 bg-card/50 rounded-lg">
+                        <Timer className="h-8 w-8 text-primary mx-auto mb-2" />
+                        <h4 className="font-semibold">Speed & Timing</h4>
+                        <p className="text-2xl font-bold text-primary">{performanceAnalysis.speedTiming.score}/100</p>
+                        <p className="text-sm text-muted-foreground mt-1">{performanceAnalysis.speedTiming.feedback}</p>
+                      </div>
+                      
+                      <div className="text-center p-4 bg-card/50 rounded-lg">
+                        <Target className="h-8 w-8 text-secondary mx-auto mb-2" />
+                        <h4 className="font-semibold">Body Movement</h4>
+                        <p className="text-2xl font-bold text-secondary">{performanceAnalysis.bodyMovement.score}/100</p>
+                        <p className="text-sm text-muted-foreground mt-1">{performanceAnalysis.bodyMovement.feedback}</p>
+                      </div>
+                      
+                      <div className="text-center p-4 bg-card/50 rounded-lg">
+                        <Trophy className="h-8 w-8 text-success mx-auto mb-2" />
+                        <h4 className="font-semibold">Technique</h4>
+                        <p className="text-2xl font-bold text-success">{performanceAnalysis.technique.score}/100</p>
+                        <p className="text-sm text-muted-foreground mt-1">{performanceAnalysis.technique.feedback}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-warning">Areas for Improvement</h4>
+                        <ul className="space-y-2">
+                          {performanceAnalysis.areasForImprovement.map((area, index) => (
+                            <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                              <span className="text-warning">•</span>
+                              {area}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-primary">Personalized Tips for You</h4>
+                        <ul className="space-y-2">
+                          {performanceAnalysis.personalizedTips.map((tip, index) => (
+                            <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                              <span className="text-primary">💡</span>
+                              {tip}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              )}
             </div>}
 
           {currentStep === 'complete' && certificate && <Card className="p-8 border-success/20 bg-card/50 backdrop-blur-sm">

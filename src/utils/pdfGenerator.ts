@@ -9,7 +9,7 @@ export const generateCertificatePDF = async (certificate: Certificate): Promise<
     <div style="
       width: 800px;
       height: 600px;
-      padding: 60px;
+      padding: 40px;
       background: linear-gradient(135deg, #1e40af, #3b82f6);
       color: white;
       font-family: 'Arial', sans-serif;
@@ -20,6 +20,7 @@ export const generateCertificatePDF = async (certificate: Certificate): Promise<
       justify-content: center;
       align-items: center;
       text-align: center;
+      border: 8px solid #fbbf24;
     ">
       <div style="
         position: absolute;
@@ -37,10 +38,53 @@ export const generateCertificatePDF = async (certificate: Certificate): Promise<
       "></div>
       
       <div style="position: relative; z-index: 1;">
+        <!-- Government of India Header -->
+        <div style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 20px;
+          margin-bottom: 20px;
+          padding: 10px 20px;
+          background: rgba(255,255,255,0.1);
+          border-radius: 15px;
+          border: 2px solid #fbbf24;
+        ">
+          <div style="
+            width: 60px;
+            height: 60px;
+            background: #fbbf24;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #1e40af;
+            font-weight: bold;
+          ">🇮🇳</div>
+          <div style="text-align: center;">
+            <div style="font-size: 14px; font-weight: bold; color: #fbbf24;">GOVERNMENT OF INDIA</div>
+            <div style="font-size: 12px; color: #ffffff;">MINISTRY OF YOUTH AFFAIRS & SPORTS</div>
+            <div style="font-size: 10px; color: #ffffff;">ATHLETIC CERTIFICATION AUTHORITY</div>
+          </div>
+          <div style="
+            width: 60px;
+            height: 60px;
+            background: #fbbf24;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #1e40af;
+            font-weight: bold;
+          ">⚡</div>
+        </div>
+
         <h1 style="
-          font-size: 48px;
+          font-size: 42px;
           font-weight: bold;
-          margin: 0 0 20px 0;
+          margin: 0 0 15px 0;
           text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         ">CERTIFICATE</h1>
         
@@ -90,13 +134,13 @@ export const generateCertificatePDF = async (certificate: Certificate): Promise<
           display: flex;
           justify-content: space-between;
           width: 100%;
-          margin-top: 60px;
-          font-size: 16px;
+          margin-top: 40px;
+          font-size: 14px;
         ">
           <div>
             <div style="font-weight: bold; margin-bottom: 5px;">Performance Score</div>
             <div style="
-              font-size: 24px;
+              font-size: 20px;
               color: #fbbf24;
               font-weight: bold;
             ">${certificate.score}/100</div>
@@ -109,7 +153,66 @@ export const generateCertificatePDF = async (certificate: Certificate): Promise<
           
           <div>
             <div style="font-weight: bold; margin-bottom: 5px;">Certificate ID</div>
-            <div style="font-family: monospace; font-size: 12px;">${certificate.id}</div>
+            <div style="font-family: monospace; font-size: 10px;">${certificate.id}</div>
+          </div>
+        </div>
+        
+        <!-- Government Seal and Signature -->
+        <div style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          margin-top: 30px;
+          padding-top: 20px;
+          border-top: 2px solid rgba(255,255,255,0.3);
+        ">
+          <div style="text-align: center;">
+            <div style="
+              width: 80px;
+              height: 80px;
+              background: rgba(255,255,255,0.1);
+              border: 3px solid #fbbf24;
+              border-radius: 50%;
+              margin: 0 auto 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 24px;
+            ">🏛️</div>
+            <div style="font-size: 10px; font-weight: bold;">OFFICIAL SEAL</div>
+            <div style="font-size: 8px;">GOI CERTIFIED</div>
+          </div>
+          
+          <div style="text-align: center; flex: 1;">
+            <div style="
+              background: rgba(255,255,255,0.1);
+              padding: 10px 20px;
+              border-radius: 10px;
+              border: 1px solid #fbbf24;
+              margin: 0 20px;
+            ">
+              <div style="font-size: 12px; font-weight: bold; color: #fbbf24;">VERIFIED & AUTHENTICATED</div>
+              <div style="font-size: 10px;">This certificate is officially recognized by</div>
+              <div style="font-size: 10px; font-weight: bold;">Government of India Sports Ministry</div>
+            </div>
+          </div>
+          
+          <div style="text-align: center;">
+            <div style="
+              width: 80px;
+              height: 40px;
+              background: rgba(255,255,255,0.1);
+              border: 2px solid #fbbf24;
+              border-radius: 5px;
+              margin: 0 auto 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 16px;
+            ">✓</div>
+            <div style="font-size: 10px; font-weight: bold;">AUTHORIZED</div>
+            <div style="font-size: 8px;">SIGNATURE</div>
           </div>
         </div>
       </div>

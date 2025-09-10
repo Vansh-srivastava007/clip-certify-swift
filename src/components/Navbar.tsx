@@ -1,14 +1,21 @@
 import { Button } from '@/components/ui/button';
-import { User, Brain, Globe, Trophy } from 'lucide-react';
+import { Trophy, User, Brain, Newspaper, Flame, Upload } from 'lucide-react';
 
 interface NavbarProps {
   onProfileClick: () => void;
   onAIGuideClick: () => void;
   onSportsUpdateClick: () => void;
   onChallengesClick: () => void;
+  onVideoUploadClick: () => void;
 }
 
-export const Navbar = ({ onProfileClick, onAIGuideClick, onSportsUpdateClick, onChallengesClick }: NavbarProps) => {
+export const Navbar = ({ 
+  onProfileClick, 
+  onAIGuideClick, 
+  onSportsUpdateClick, 
+  onChallengesClick,
+  onVideoUploadClick
+}: NavbarProps) => {
   return (
     <nav className="bg-background/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-4">
@@ -23,7 +30,7 @@ export const Navbar = ({ onProfileClick, onAIGuideClick, onSportsUpdateClick, on
             <Button
               variant="ghost"
               onClick={onProfileClick}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:bg-primary/10 transition-colors"
             >
               <User className="h-4 w-4" />
               Profile
@@ -32,7 +39,7 @@ export const Navbar = ({ onProfileClick, onAIGuideClick, onSportsUpdateClick, on
             <Button
               variant="ghost"
               onClick={onAIGuideClick}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:bg-primary/10 transition-colors"
             >
               <Brain className="h-4 w-4" />
               AI Guide
@@ -41,19 +48,28 @@ export const Navbar = ({ onProfileClick, onAIGuideClick, onSportsUpdateClick, on
             <Button
               variant="ghost"
               onClick={onSportsUpdateClick}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:bg-primary/10 transition-colors"
             >
-              <Globe className="h-4 w-4" />
+              <Newspaper className="h-4 w-4" />
               Sports Updates
             </Button>
             
             <Button
               variant="ghost"
               onClick={onChallengesClick}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:bg-primary/10 transition-colors"
             >
-              <Trophy className="h-4 w-4" />
+              <Flame className="h-4 w-4" />
               Challenges
+            </Button>
+
+            <Button 
+              variant="ghost" 
+              onClick={onVideoUploadClick}
+              className="flex items-center gap-2 hover:bg-primary/10 transition-colors"
+            >
+              <Upload className="h-4 w-4" />
+              Video Analysis
             </Button>
           </div>
         </div>
