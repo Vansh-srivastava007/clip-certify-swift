@@ -14,7 +14,107 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      certificates: {
+        Row: {
+          certificate_data: Json | null
+          certificate_name: string
+          challenge_id: string
+          id: string
+          issued_at: string
+          user_id: string
+        }
+        Insert: {
+          certificate_data?: Json | null
+          certificate_name: string
+          challenge_id: string
+          id?: string
+          issued_at?: string
+          user_id: string
+        }
+        Update: {
+          certificate_data?: Json | null
+          certificate_name?: string
+          challenge_id?: string
+          id?: string
+          issued_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenges: {
+        Row: {
+          challenge_type: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          level: string
+          score: number | null
+          status: string
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          challenge_type: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          level: string
+          score?: number | null
+          status?: string
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          challenge_type?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          level?: string
+          score?: number | null
+          status?: string
+          user_id?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

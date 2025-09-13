@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -82,13 +83,34 @@ export function AIGuide() {
     }
   ];
 
-  const handleGenerateRecommendations = () => {
+  const handleGenerateRecommendations = async () => {
     if (!selectedGuide || !userInput.trim()) return;
     
     setIsGenerating(true);
     
-    // Simulate AI recommendation generation
-    setTimeout(() => {
+    try {
+      // Use AI for first 3 guide types, fallback to mock for others
+      if (['activity-planner', 'diet-planner', 'recovery-optimizer'].includes(selectedGuide)) {
+        const { data, error } = await supabase.functions.invoke('ai-guide', {
+          body: {
+            guideType: selectedGuide,
+            userInput: userInput
+          }
+        });
+
+        if (error) {
+          console.error('AI Guide API error:', error);
+          throw new Error('Failed to generate AI recommendations');
+        }
+
+        if (data.recommendations) {
+          setRecommendations(data.recommendations);
+          setIsGenerating(false);
+          return;
+        }
+      }
+      
+      // Fallback to mock recommendations
       const selectedOption = guideOptions.find(option => option.id === selectedGuide);
       
       let mockRecommendations: string[] = [];
@@ -132,8 +154,20 @@ export function AIGuide() {
       }
       
       setRecommendations(mockRecommendations);
+    } catch (error) {
+      console.error('Error generating recommendations:', error);
+      
+      // Fallback to basic mock recommendations on error
+      setRecommendations([
+        "Unable to generate personalized recommendations at this time",
+        "Please try again later or contact support",
+        "In the meantime, consider consulting with a professional trainer",
+        "Focus on consistency in your current routine",
+        "Stay hydrated and get adequate rest"
+      ]);
+    } finally {
       setIsGenerating(false);
-    }, 2000);
+    }
   };
 
   const resetGuide = () => {
